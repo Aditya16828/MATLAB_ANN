@@ -1,31 +1,31 @@
 [x, target] = bodyfat_dataset();
 
-resMaxP = 0;
+resMinP = 1e7;
 maxSize = 1;
 
-while (maxSize <= 60)
+while (maxSize <= 30)
     [PTrainarr, PValarr, PTestarr, net, tr] = determineHiddenLayerSize(x, target, maxSize);
 
 
-    maxValue = 0;
-    maxValueidx = -1;
+    minValue = 1e7;
+    minValueidx = -1;
     
     for i = 1:maxSize
-        if(maxValue < PTestarr(i))
-            maxValue = PTestarr(i);
-            maxValueidx = i;
+        if(minValue > PTestarr(i))
+            minValue = PTestarr(i);
+            minValueidx = i;
         end
     end
 
-    if (resMaxP < maxValue)
-        resMaxP = maxValue;
+    if (resMinP > minValue)
+        resMinP = minValue;
         network = net;
     end
 
     maxSize = maxSize + 1;
 end
 
-disp(resMaxP);
+disp(resMinP);
 
 y = network(x);
 e = gsubtract(target, y);
