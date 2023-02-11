@@ -1,0 +1,36 @@
+%[x, target] = bodyfat_dataset();
+[x, target] = bioReactor();
+
+maxSize = input("Enter maxSize:");
+
+resMinP = 1e7;
+resMinPidx = -1;
+%R2Final = -1;
+%mseFinal = -1;
+%apeFinal = -1;
+
+[Parr, R2, ape, mse, netarr, trarr] = determineHiddenLayerSize(x, target, maxSize);
+for i = 1:maxSize
+    if(resMinP > Parr(i))
+        resMinP = Parr(i);
+        resMinPidx = i;
+    end
+end
+
+disp("Performance value:"); disp(resMinP);
+disp("R2 value:"); disp(R2(resMinPidx));
+disp("MSE value:"); disp(mse(resMinPidx));
+disp("APE value:"); disp(ape(resMinPidx));
+
+disp(x);
+
+y = network(x);
+
+figure, plotperform(tr);
+figure, plottrainstate(tr);
+figure, plotregression(target, y);
+
+genFunction(network,'myNeuralNetworkFunction');
+y = myNeuralNetworkFunction(x);
+
+disp(y);
